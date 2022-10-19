@@ -1264,7 +1264,7 @@ void *cst_to_gputree(CSTREE *cst){
 		gtree_item[base + reclen].index = 0;
 		gtree_item[base + reclen].freq = (*p)->supp;
 		(*p)->gnidx = rec_cnt[id]++;
-		printf("rec(%d, %d)=(%d, - )\n", id,(*p)->gnidx , pid);
+		//printf("rec(%d, %d)=(%d, - )\n", id,(*p)->gnidx , pid);
 
 		p = &(*p)->sibling;
 	}
@@ -1272,9 +1272,9 @@ void *cst_to_gputree(CSTREE *cst){
 	for(int i=0; i< cst->cnt;i++){
 		node = cst->heads[i].list;
 		//int pid = (int)node->id;
-		printf("pid: %d\n", pid);
+		//printf("pid: %d\n", pid);
 		pid = (int)node->id;
-		printf("pid: %d\n", pid);
+		//printf("pid: %d\n", pid);
 		p = &(node->children);
 		while(node){
 			p = &(node->children);
@@ -1306,8 +1306,9 @@ void *cst_to_gputree(CSTREE *cst){
 
 
 	//int i = 0;
-	printf("cst->cnt_before_dbg: %d\n", cst->cnt);
+	//printf("cst->cnt_before_dbg: %d\n", cst->cnt);
 	int limit = cst->cnt;
+	/*
 	for(int i=0 ; i < cst->cnt ; i++){
 		if(i >= limit)
 			return;
@@ -1319,6 +1320,7 @@ void *cst_to_gputree(CSTREE *cst){
 		}
 
 	}
+	*/
 	return;
 	
 

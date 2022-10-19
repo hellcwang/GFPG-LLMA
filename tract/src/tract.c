@@ -685,6 +685,7 @@ int ib_read (ITEMBASE *base, TABREAD *trd, int mode)
   TRACT    *t;                  /* to access the transaction */
   WTRACT   *x;                  /* to access the transaction */
   double   z;                   /* buffer for an item weight */
+  int count = 0;
 
   assert(base && trd);          /* check the function arguments */
   base->trd = trd;              /* note the table reader */
@@ -716,6 +717,11 @@ int ib_read (ITEMBASE *base, TABREAD *trd, int mode)
       if (d == TRD_REC) break;  /* the transaction must be empty */
       return base->err = E_ITEMEXP;
     }                           /* otherwise there must be an item */
+    count ++;
+    if(count < 4)		/* Eliminate first 3 column*/
+	    continue;
+    //printf("%d ", count);
+    //printf(":%s \n", b);
     itd = (ITEMDATA*)idm_bykey(base->idmap, b);
     if (!itd) {                 /* if the item is not known yet */
       if (base->app == APP_NONE) { /* if new items are to be ignored */
@@ -778,7 +784,13 @@ int ib_read (ITEMBASE *base, TABREAD *trd, int mode)
       }                         /* enlarge the transaction buffer */
       t->items[t->size++] = itd->id;
     }                           /* add the item to the transaction */
+    printf("%d:%d\n", t->size - 1, t->items[t->size - 1]);
   } while (d == TRD_FLD);       /* while not at end of record */
+  //for(int i = 0; i < t->size - 1; i++){
+  //        if(t != NULL )
+  //      	  continue;
+  //        printf("%d:%d\n", i, t->items[i]);
+  //}
   if (base->mode & IB_WEIGHTS){ /* if the items carry weights */
     x = (WTRACT*)base->tract;   /* get the transaction buffer and */
     if (mode & TA_TERM)         /* if requested, store term. item */
