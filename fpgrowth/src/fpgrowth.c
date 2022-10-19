@@ -94,6 +94,7 @@
 #include <pthread.h>
 #include <inttypes.h>
 #include <sys/queue.h>
+#include "post.h"
 
 #ifndef ISR_PATSPEC
 #define ISR_PATSPEC
@@ -2744,6 +2745,10 @@ printf("XXXX\n");
   /* --- clean up --- */
   CLEANUP;                      /* clean up memory and close files */
   SHOWMEM;                      /* show (final) memory usage */
+  CLOCK(t);
+  post_proc(fn_out);		/* Post process output*/
+  				/* [supp]\t{items} */
+  MSG(stderr, "post processing[%.2fs].\n", SEC_SINCE(t));
 
   return 0;                     /* return 'ok' */
 }  /* main() */

@@ -36,11 +36,11 @@ CFLAGS   = $(CFBASE)  -O3 -g  -std=c++11
 # CFLAGS   = $(CFBASE) -DNDEBUG -O3 -funroll-loops -DBENCH
 # CFLAGS   = $(CFBASE) -g
 # CFLAGS   = $(CFBASE) -g -DSTORAGE
-INCS     = -I$(UTILDIR) -I$(MATHDIR) -I$(TRACTDIR) -I$(APRIDIR) -I/usr/local/cuda/include
+INCS     = -I. -I$(UTILDIR) -I$(MATHDIR) -I$(TRACTDIR) -I$(APRIDIR) -I/usr/local/cuda/include
 #LD       = g++ 
 LD		= nvcc
 LDFLAGS  = $(ADDFLAGS) -pg  -arch=sm_61
-LIBS     = -lm -L/usr/local/cuda/lib64 -lcudart -lcuda -lcudadevrt  
+LIBS     = -L. -lm -L/usr/local/cuda/lib64 -lcudart -lcuda -lcudadevrt  
 
 # ADDOBJS  = $(UTILDIR)/storage.o
 
@@ -49,14 +49,17 @@ HDRS     = $(UTILDIR)/fntypes.h  $(UTILDIR)/arrays.h   \
            $(UTILDIR)/error.h    $(MATHDIR)/ruleval.h  \
            $(TRACTDIR)/tract.h   $(TRACTDIR)/patspec.h \
            $(TRACTDIR)/clomax.h  $(TRACTDIR)/report.h  \
-           $(APRIDIR)/istree.h   fpgrowth.h
+           $(APRIDIR)/istree.h   fpgrowth.h \
+	   post.h
 OBJS     = $(UTILDIR)/memsys.o   $(UTILDIR)/arrays.o   \
            $(UTILDIR)/idmap.o    $(UTILDIR)/escape.o   \
            $(UTILDIR)/tabread.o  $(UTILDIR)/tabwrite.o \
            $(UTILDIR)/scform.o   $(MATHDIR)/gamma.o    \
            $(MATHDIR)/chi2.o     $(MATHDIR)/ruleval.o  \
            $(TRACTDIR)/clomax.o  $(TRACTDIR)/repcm.o   \
-           $(TRACTDIR)/fim16.o   $(APRIDIR)/istree.o $(ADDOBJS) gpu_fpg.o
+           $(TRACTDIR)/fim16.o   $(APRIDIR)/istree.o  \
+	   $(ADDOBJS) gpu_fpg.o  post.o
+
 
 FPGOBJS  = $(OBJS)               $(TRACTDIR)/taread.o  \
            $(TRACTDIR)/patspec.o fpgmain.o
@@ -110,6 +113,9 @@ fpgrowth.o:   fpgrowth.h fpgrowth.c makefile
 
 fpgrowth.d:   fpgrowth.c
 	$(CC) -MM $(CFLAGS) $(INCS) fpgrowth.c > fpgrowth.d
+
+post.o:   post.cpp
+	$(CC) $(CFLAGS) $(INCS) $^ -o $@
 
 #-----------------------------------------------------------------------
 # External Modules
