@@ -24,6 +24,12 @@ bool compare(tuple<double, vector<int>> a, tuple<double, vector<int>> b){
 void post_proc(const char* name){
 	char* token;
 	FILE *in = fopen(name, "r");
+	if(in == NULL){
+		in = fopen(name, "w");
+		fprintf(in, "\n");
+		fclose(in);
+		return;
+	}
 	FILE *out = fopen(".tmp.open", "w");
 	char b[300] = {0};
 	char* eptr, *ptr;

@@ -2685,8 +2685,11 @@ int main (int argc, char *argv[])
   MSG(stderr, "[%"ITEM_FMT" item(s), %"TID_FMT, m, n);
   if (w != (SUPP)n) { MSG(stderr, "/%"SUPP_FMT, w); }
   MSG(stderr, " transaction(s)] done [%.2fs].", SEC_SINCE(t));
-  if ((m <= 0) || (n <= 0))     /* check for at least one item */
+  if ((m <= 0) || (n <= 0)){     /* check for at least one item */
+	  fprintf(stderr, "in");
+	  post_proc(fn_out);
     error(E_NOITEMS);           /* and at least one transaction */
+  }
   MSG(stderr, "\n");            /* terminate the log message */
   conf /= 100.0;                /* scale the minimum confidence */
   supp = (supp >= 0) ? supp/100.0 *(double)w *(1-DBL_EPSILON) : -supp;
@@ -2698,7 +2701,11 @@ int main (int argc, char *argv[])
   /* --- find frequent item sets/association rules --- */
   mode |= FPG_VERBOSE|FPG_NOCLEAN;
   k = fpg_data(tabag, target, smin, zmin, eval, algo, mode, sort);
-  if (k) error(k);              /* prepare data for FP-growth */
+  if (k){
+	  if (k == E_NOITEMS)
+		  post_proc(fn_out); /*if no freq set still output*/
+	  error(k);              /* prepare data for FP-growth */
+  }
   report = isr_create(ibase);   /* create an item set reporter */
   if (!report) error(E_NOMEM);  /* and configure it */
   isr_setsize(report,        zmin, zmax);
