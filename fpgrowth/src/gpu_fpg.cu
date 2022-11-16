@@ -637,6 +637,7 @@ __host__ void fianl_next_index_offset(unsigned int *d_dst, unsigned int *d_src, 
 
 __host__ long  cuda_main(CSTREE *cst, SUPP smin)
 {
+	FILE* out = fopen(".tmp.tmp.cudaout", "w");
 
 	int num_fpnode = cst->num_fpnode;
 	int num_fi = cst->cnt;
@@ -761,6 +762,7 @@ __host__ long  cuda_main(CSTREE *cst, SUPP smin)
 	void *d_old_tab_in=0;
 	do{
 		printf("== %d-item set==\n",k++);
+		fprintf(out,"%d\t", k - 1);		/* For output 2*/
 		printf("kernel_cal_offset\n");
 		unsigned int *d_wide_tab_id;
 		if(new_global_num_fi > old_global_num_fi){
@@ -825,6 +827,7 @@ __host__ long  cuda_main(CSTREE *cst, SUPP smin)
 
 		CUDA_CHECK_RETURN(cudaMemcpy(global_num_fi, d_tab_out, sizeof(unsigned int), cudaMemcpyDeviceToHost));
 		printf("global_num_fi=%u\n",*global_num_fi);
+		fprintf(out, "%d\n", *global_num_fi);		// before pruning
 		new_global_num_fi = *global_num_fi;
 		void *d_ptmp;
 		//swap input and output tab
@@ -857,6 +860,8 @@ __host__ long  cuda_main(CSTREE *cst, SUPP smin)
 	CUDA_CHECK_RETURN(cudaMemcpy(h_res, d_res, sizeof(unsigned long long), cudaMemcpyDeviceToHost));
 	unsigned long long *h_pat = (unsigned long long*)h_res;
 	printf("CUDA #pat = %llu\n",h_pat[0]);
+	fprintf(out, "0");
+	fclose(out);
 	return (long) h_res;
 }
 

@@ -784,7 +784,7 @@ int ib_read (ITEMBASE *base, TABREAD *trd, int mode)
       }                         /* enlarge the transaction buffer */
       t->items[t->size++] = itd->id;
     }                           /* add the item to the transaction */
-    printf("%d:%d\n", t->size - 1, t->items[t->size - 1]);
+    //printf("%d:%d\n", t->size - 1, t->items[t->size - 1]);
   } while (d == TRD_FLD);       /* while not at end of record */
   //for(int i = 0; i < t->size - 1; i++){
   //        if(t != NULL )

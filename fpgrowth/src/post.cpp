@@ -21,18 +21,20 @@ bool compare(tuple<double, vector<int>> a, tuple<double, vector<int>> b){
 
 	return 0;
 }
-void post_proc(const char* name){
+void post_proc(const char* name, const char* name2){
 	char* token;
+	FILE *out2 = fopen(name2, "w");
 	FILE *in = fopen(name, "r");
-	if(in == NULL){
+	if(in == NULL ){
 		in = fopen(name, "w");
+		printf("in");
 		fprintf(in, "\n");
-		fclose(in);
+		fprintf(out2, "0\n");
 		return;
 	}
 	FILE *out = fopen(".tmp.open", "w");
+	FILE *in2 = fopen(".tmp.tmp.cudaout", "r");
 	char b[300] = {0};
-	char* eptr, *ptr;
 	int count;
 	int t;
 	int cnt;
@@ -47,7 +49,6 @@ void post_proc(const char* name){
 			if(b[i] == ' ')
 				count ++;
 		}
-		ptr = b;
 		token = strtok(b, " ");
 		
 		while(token != NULL){
@@ -64,7 +65,7 @@ void post_proc(const char* name){
 		tmp.clear();
 		memset(b, 300, sizeof(char));
 	}
-	//sort(buf.begin(), buf.end(), compare);
+	sort(buf.begin(), buf.end(), compare);
 
 	// Write
 	for(auto &vec : buf){
@@ -81,8 +82,32 @@ void post_proc(const char* name){
 	fclose(in);
 	fclose(out);
 
-	remove(name);
-	rename(".tmp.open", name);
+	remove(name);				/* Remove old file */
+	rename(".tmp.open", name);		/* Rename tmp to original */
+	
+	/**************************************************
+	 * Out file 2
+	 * 1. total number of items
+	 * 2. each pruning 
+	 * end
+	 * ************************************************/
+	int length[500] = {0};
+	int be, index;
+	fprintf(out2, "%ld\n", buf.size());  		/* Total num of items*/
+
+	for(auto&a : buf){			/* Generate number after pruning*/
+		length[get<1>(a).size()] += 1;
+	}
+	for(int i = 1; i < 500; i++){
+		if(fscanf(in2, "%d\t%d\n", &index, &be) == 0)
+			break;
+		if(index != i)		/* Mismatch -> no further iteration*/
+			break;
+		fprintf(out2, "%d\t%d\t%d\n", i, be, length[i]);
+	}
+
+	fclose(in2);
+	fclose(out2);
 	return;
 }
 

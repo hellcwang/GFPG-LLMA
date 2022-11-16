@@ -17,7 +17,7 @@
 #define EXTERNC
 #endif
 
-EXTERNC void post_proc(const char*);
+EXTERNC void post_proc(const char*, const char*);
 
 #undef EXTERNC
 

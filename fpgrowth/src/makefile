@@ -200,7 +200,7 @@ install:
 # Clean up
 #-----------------------------------------------------------------------
 localclean:
-	rm -f *.d *.o *~ *.flc core $(PRGS)
+	rm -f *.d *.o *~ *.flc core $(PRGS) *.txt
 
 clean:
 	$(MAKE) localclean

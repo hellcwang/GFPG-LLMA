@@ -2381,6 +2381,7 @@ int main (int argc, char *argv[])
   CCHAR   **optarg = NULL;      /* option argument */
   CCHAR   *fn_inp  = NULL;      /* name of the input  file */
   CCHAR   *fn_out  = NULL;      /* name of the output file */
+  CCHAR   *fn_out2 = NULL;	/* For output2 */
   CCHAR   *fn_sel  = NULL;      /* name of item selection file */
   CCHAR   *fn_psp  = NULL;      /* name of pattern spectrum file */
   CCHAR   *recseps = NULL;      /* record  separators */
@@ -2572,6 +2573,7 @@ int main (int argc, char *argv[])
       switch (k++) {            /* evaluate non-options */
         case  0: fn_inp = s;      break;
         case  1: fn_out = s;      break;
+	case  2: fn_out2 = s;	  break;
         default: error(E_ARGCNT); break;
       }                         /* note filenames */
     }
@@ -2687,7 +2689,7 @@ int main (int argc, char *argv[])
   MSG(stderr, " transaction(s)] done [%.2fs].", SEC_SINCE(t));
   if ((m <= 0) || (n <= 0)){     /* check for at least one item */
 	  fprintf(stderr, "in");
-	  post_proc(fn_out);
+	  post_proc(fn_out, fn_out2);
     error(E_NOITEMS);           /* and at least one transaction */
   }
   MSG(stderr, "\n");            /* terminate the log message */
@@ -2703,7 +2705,7 @@ int main (int argc, char *argv[])
   k = fpg_data(tabag, target, smin, zmin, eval, algo, mode, sort);
   if (k){
 	  if (k == E_NOITEMS)
-		  post_proc(fn_out); /*if no freq set still output*/
+		  post_proc(fn_out, fn_out2); /*if no freq set still output*/
 	  error(k);              /* prepare data for FP-growth */
   }
   report = isr_create(ibase);   /* create an item set reporter */
@@ -2753,7 +2755,7 @@ printf("XXXX\n");
   CLEANUP;                      /* clean up memory and close files */
   SHOWMEM;                      /* show (final) memory usage */
   CLOCK(t);
-  post_proc(fn_out);		/* Post process output*/
+  post_proc(fn_out, fn_out2);		/* Post process output*/
   				/* [supp]\t{items} */
   MSG(stderr, "post processing[%.2fs].\n", SEC_SINCE(t));
 
